@@ -5,7 +5,6 @@
 #include "panozo/Param_State.h"
 #include "panozo/GlobalLocalParametrization.h"
 #include "panozo/StateManager.h"
-#include <igl/components.h>
 #include <iostream>
 
 using namespace std;

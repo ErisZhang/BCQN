@@ -2,7 +2,7 @@
 
 #include "igl/adjacency_list.h"
 #include "igl/Timer.h"
-#include "igl/unique.h"
+#include "igl/unique_rows.h"
 #include "igl/vertex_triangle_adjacency.h"
 
 #include "tbb/tbb.h"
