@@ -45,16 +45,12 @@ obj_tri = exam_mesh.f;
 q = reshape(exam_mesh.v(:, 1:2)', ver_num * 2, 1);
 
 q_rest = q;
-
 q(2 * [1:ver_num]) = q(2 * [1:ver_num]) * 0.5 - 0.5;
-
 dirichlet = zeros(2 * ver_num, 1);
 
 anchors_fix = find(y==miny);
 anchors_move = find(y==maxy);
-
 mask = [anchors_fix; anchors_move];
-
 dirichlet([2 * mask - 1, 2 * mask]) = 1;
 
 q_rest(2 * anchors_move - 1) = q_rest(2 * anchors_move - 1) + 1;

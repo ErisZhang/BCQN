@@ -9,6 +9,8 @@ q_x = K * u_x + q;
 
 JTJ_in = [J_ui(1), J_ui(2), JT_ui(1), JT_ui(2)]';
 
+% disp(norm(JTJ_in));
+
 [J_q, JV_u, JTV_u, wu, bu, rows, cols, vals] = energy_hessian_mex(tri_num, X_g_inv, tri_areas, exam_mesh.f, q_x, get_energy_type(), amips_s, F_dot, ver_num, c1, c2, d1, clamp, J_u, JT_u, JTJ_in, x2u);
 
 grad = K' * J_q;
@@ -21,4 +23,3 @@ H = sparse(rows, cols, vals, 2 * ver_num, 2 * ver_num);
 H = K' * H * K;
 
 end
-
