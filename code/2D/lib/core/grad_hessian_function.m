@@ -5,6 +5,7 @@ function [ grad, H ] = grad_hessian_function( u_x, clamp )
 global tri_num X_g_inv tri_areas exam_mesh amips_s F_dot ver_num K q c1 c2 d1 x2u J_u J_ui JT_u JT_ui JV_u JTV_u wu bu
 
 q_x = K * u_x + q;
+% q_x = reshape(exam_mesh.v(:, 1:2)', ver_num * 2, 1);
 
 JTJ_in = [J_ui(1), J_ui(2), JT_ui(1), JT_ui(2)]';
 
