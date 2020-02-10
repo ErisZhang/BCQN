@@ -8,6 +8,4 @@ example_shear_bar_1_init
 % example_yaron_bar_init
 % example_gecko_init
 
-
 newton_solver(u_n, 0);
-

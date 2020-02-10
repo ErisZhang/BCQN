@@ -51,23 +51,10 @@ Vector2d energy_derivative(int type, Vector2d S)
             break;
             
         case 5: // gmr
-						//            J = S[0] * S[1];
-						//            l1 = S[0] * S[0] + S[1] * S[1];
-						//            l2 = S[0] * S[0] * S[1] * S[1];
-						//            
-						//            es[0] = c1_param * (-2.0 / 3.0 * pow(J, -5.0 / 3.0) * S[1] * l1 + pow(J, -2.0 / 3.0) * 2 * S[0]) 
-						//                    + c2_param * (-4.0 / 3.0 * pow(J, -7.0 / 3.0) * S[1] * l2 + pow(J, -4.0 / 3.0) * 2 * S[1] * S[1] * S[0]) 
-						//                    + d1_param * 2 * (J - 1) * S[1];
-						//            
-						//            es[1] = c1_param * (-2.0 / 3.0 * pow(J, -5.0 / 3.0) * S[0] * l1 + pow(J, -2.0 / 3.0) * 2 * S[1]) 
-						//                    + c2_param * (-4.0 / 3.0 * pow(J, -7.0 / 3.0) * S[0] * l2 + pow(J, -4.0 / 3.0) * 2 * S[0] * S[0] * S[1]) 
-						//                    + d1_param * 2 * (J - 1) * S[0];
+            es[0] = c1_param * (1.0 / S[1] - S[1] / (S[0] * S[0])) - d1_param *2.*S[1]*(1.0 - S[0]*S[1]);
+            es[1] = c1_param * (1.0 / S[0] - S[0] / (S[1] * S[1])) - d1_param *2.*S[0]*(1.0 - S[0]*S[1]);
 
-						es[0] = c1_param * (1.0 / S[1] - S[1] / (S[0] * S[0])) - d1_param *2.*S[1]*(1.0 - S[0]*S[1]);
-						es[1] = c1_param * (1.0 / S[0] - S[0] / (S[1] * S[1])) - d1_param *2.*S[0]*(1.0 - S[0]*S[1]);
-
-						break;
-				
+            break;
 				
         case 6: // olg
             
@@ -149,26 +136,6 @@ double energy_hessian(double s1, double s2, double s1j, double s1k, double s2j, 
             
             hessian = (e11 * s1k + e12 * s2k) * s1j + e1 * s1jk + (e12 * s1k + e22 * s2k) * s2j + e2 * s2jk;
             
-            /*double J = s1 * s2;
-            double l1 = s1 * s1 + s2 * s2;
-            double l2 = s1 * s1 * s2 * s2;
-                    
-            double l1_jk = 2 * (s1k * s1j + s1 * s1jk + s2k * s2j + s2 * s2jk);
-            double l1_j = 2 * s1 * s1j + 2 * s2 * s2j;
-            double l1_k = 2 * s1 * s1k + 2 * s2 * s2k;
-            double l2_jk = 2 * (s1k * s1j * s2 * s2 + s1 * s1jk * s2 * s2 + s1 * s1j * 2 * s2k + s2k * s2j * s1 * s1 + s2 * s2jk * s1 * s1 + s2 * s2j * 2 * s1k);
-            double l2_j = 2 * s1 * s1j * s2 * s2 + 2 * s2 * s2j * s1 * s1;
-            double l2_k = 2 * s1 * s1k * s2 * s2 + 2 * s2 * s2k * s1 * s1;
-            double J_j = s1j * s2 + s1 * s2j;
-            double J_k = s1k * s2 + s1 * s2k;
-            double J_jk = s1jk * s2 + s1j * s2k + s1k * s2j + s1 * s2jk;
-            
-            double v1 = c1_param * (l1_jk / pow(J, 2.0 / 3.0) + l1_j / pow(J, 5.0 / 3.0) * J_k + l1_k / pow(J, 5.0 / 3.0) * J_j + l1 / pow(J, 8.0 / 3.0) * J_j * J_k + l1 / pow(J, 5.0 / 3.0) * J_jk);
-            double v2 = c2_param * (l2_jk / pow(J, 4.0 / 3.0) + l2_j / pow(J, 7.0 / 3.0) * J_k + l2_k / pow(J, 7.0 / 3.0) * J_j + l2 / pow(J, 10.0 / 3.0) * J_j * J_k + l2 / pow(J, 7.0 / 3.0) * J_jk);
-            double v3 = 2 * d1_param * (J_j * J_k + (J - 1) * J_jk);
-            
-            hessian = v1 + v2 + v3;*/
-            
             break;
     }
     
@@ -185,6 +152,8 @@ void mexFunction(int nlhs, mxArray *plhs[], int nrhs, const mxArray *prhs[])
     double *tri_num, *X_g_inv, *tri_areas, *obj_tri, *q_target, *type, *amips_s, *F_dot, *ver_num, *c1_g, *c2_g, *d1_g, *clamp, *J_index, *JT_index, *JTJ_info, *x2u;
     double *row, *col, *val, *grad, *J_value, *JT_value, *wu, *bu;
     
+
+    // input list
     tri_num = mxGetPr(prhs[0]);
     X_g_inv = mxGetPr(prhs[1]);
     tri_areas = mxGetPr(prhs[2]);
@@ -203,6 +172,7 @@ void mexFunction(int nlhs, mxArray *plhs[], int nrhs, const mxArray *prhs[])
     JTJ_info = mxGetPr(prhs[15]);
     x2u = mxGetPr(prhs[16]);
     
+
     int tri_n = tri_num[0];
     int ver_n = ver_num[0];
     int energy_type = type[0];
@@ -216,6 +186,8 @@ void mexFunction(int nlhs, mxArray *plhs[], int nrhs, const mxArray *prhs[])
     int JT_rn = JTJ_info[2];
     int JT_cn = JTJ_info[3];
     
+
+    // output list
     grad_mex = plhs[0] = mxCreateDoubleMatrix(2 * ver_n, 1, mxREAL);
     J_value_mex = plhs[1] = mxCreateDoubleMatrix(J_rn * J_cn, 1, mxREAL);
     JT_value_mex = plhs[2] = mxCreateDoubleMatrix(JT_rn * JT_cn, 1, mxREAL);
@@ -224,6 +196,7 @@ void mexFunction(int nlhs, mxArray *plhs[], int nrhs, const mxArray *prhs[])
     row_mex = plhs[5] = mxCreateDoubleMatrix(36 * tri_n, 1, mxREAL);
     col_mex = plhs[6] = mxCreateDoubleMatrix(36 * tri_n, 1, mxREAL);
     val_mex = plhs[7] = mxCreateDoubleMatrix(36 * tri_n, 1, mxREAL);
+    
     
     grad = mxGetPr(grad_mex);
     J_value = mxGetPr(J_value_mex);

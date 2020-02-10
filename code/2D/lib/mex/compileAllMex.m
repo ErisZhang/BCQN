@@ -23,5 +23,3 @@ mex('-largeArrayDims',['-I',eigenFolder],'computeMeshTranformationCoeffsMex.cpp'
 mex(['-I',eigenFolder],'energy_value_mex.cpp');
 mex(['-I',eigenFolder],'energy_color_mex.cpp');
 mex(['-I',eigenFolder],'grad_function_mex.cpp');
-
-
